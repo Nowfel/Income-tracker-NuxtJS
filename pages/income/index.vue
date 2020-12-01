@@ -17,12 +17,15 @@ export default {
         return {
           id: item.id,
           date: item.date,
-          description: item.description,
+          type: item.type ? item.type.title : '',
           amount: item.amount,
         };
       });
     },
-    
+    query(){
+        return "?include=income.type&per_page=5&order_direction=asc"
+    }
+
   },
   created() {
     this.getData();
@@ -30,7 +33,7 @@ export default {
   methods: {
     getData() {
       this.$axios
-        .get("income")
+        .get("income" + this.query)
         .then((result) => {
           this.items = result.data.data;
         })
