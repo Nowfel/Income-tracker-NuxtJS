@@ -1,10 +1,14 @@
 <template>
-  <form>
+  <form @submit.prevent="submit">
     <input
       type="text"
       placeholder="Income Description..."
       v-model="description"
     />
+    <div>
+      <b-form-select v-model="selected" :options="options"></b-form-select>
+      {{ selected }}
+    </div>
     <input type="number" placeholder="Income Value..." v-model="amount" />
     <input type="date" placeholder="Income Date..." v-model="date" />
     <input type="submit" value="Submit" />
@@ -15,10 +19,51 @@
 export default {
   data() {
     return {
-      description: "",
-      date: "",
       amount: "",
+      date: "",
+      description: "",
+      isOfficeIncome: true,
+      typeId: null,
+      loader: false,
+      selected: null,
+      options: [{ value: null, text: "Please select an option" }],
     };
+  },
+  mounted() {
+    this.getAllType();
+  },
+  methods: {
+    submit() {
+      let object = {
+        description: this.description,
+        date: this.date,
+        amount: this.amount,
+        typeId: this.typeId,
+        isOfficeIncomeId: this.isOfficeIncome,
+      };
+      this.loader = true;
+      this.$axios
+        .post("income", object)
+        .then((result) => {
+          this.$router.push("/income/list");
+        })
+        .catch((err) => {})
+        .finally(() => (this.loader = false));
+    },
+    getAllType() {
+      this.$axios
+        .get("income-type")
+        .then((result) => {
+          let items = result.data.data.map((item) => {
+            return {
+              value: item.id,
+              text: item.title,
+            };
+          });
+          this.options = [...this.options, ...items];
+        })
+        .catch((err) => {});
+    },
   },
 };
 </script>

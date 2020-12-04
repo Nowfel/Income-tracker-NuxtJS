@@ -1,18 +1,17 @@
 <template>
-    <div>
-<IncomeForm/>
-    </div>
+  <div>
+    <IncomeForm />
+  </div>
 </template>
 
 <script>
-import IncomeForm from '@/components/IncomeForm'
-    export default {
-        components: {
-            IncomeForm,
-        },
-    }
+import IncomeForm from "@/components/IncomeForm";
+export default {
+  components: {
+    IncomeForm,
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

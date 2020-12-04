@@ -22,11 +22,12 @@ export default {
           date: item.date,
           type: item.type ? item.type.title : "",
           amount: item.amount,
+          description: item.description,
         };
       });
     },
     query() {
-      return "?include=income.type&per_page=5&order_direction=asc";
+      return "?include=income.type&per_page=30&order_direction=desc";
     },
   },
   created() {
