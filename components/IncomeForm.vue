@@ -52,29 +52,19 @@ export default {
         amount: this.amount,
         typeId: this.typeId,
         isOfficeIncomeId: this.isOfficeIncome,
-      } 
-    }
+      };
+    },
   },
   watch: {
-      editItem: {
-        immediate: true,
-        deep: true,
-        handler() {
-          console.log(this.editItem, 13213);
-          if (this.editItem && Object.keys(this.editItem).length) {
-            this.editMode = true;
-            this.amount = this.editItem.amount;
-            this.description = this.editItem.description;
-            this.date = this.editItem.date.substr(0, 10);
-            this.typeId = this.editItem.typeId;
-            this.isOfficeIncome = this.editItem.isOfficeIncome;
-            // this.formData.desc = this.editItem.desc;
-          } else {
-            this.editMode = false;
-          }
-        },
+    editItem: {
+      immediate: true,
+      deep: true,
+      handler() {
+        console.log(this.editItem, 13213);
+        this.handleUpdateData(this.editItem);
       },
     },
+  },
   mounted() {
     this.getAllType();
   },
@@ -106,20 +96,30 @@ export default {
         })
         .catch((err) => {});
     },
-    update(){
+    update() {
       this.loader = true;
       this.$axios
         .put("income/" + this.editItem.id, this.incomeData)
-        .then((result) => {
-          
-        })
+        .then((result) => {})
         .catch((err) => {})
         .finally(() => {
           this.loader = false;
           this.$emit("close");
         });
-    }
-    
+    },
+    handleUpdateData({ amount, isOfficeIncome, typeId, date, description }) {
+      if (this.editItem && Object.keys(this.editItem).length) {
+        this.editMode = true;
+        this.amount = amount;
+        this.description = description || "";
+        this.date = date ? date.substr(0, 10) : "";
+        this.typeId = typeId || null;
+        this.isOfficeIncome = isOfficeIncome;
+        // this.formData.desc = desc;
+      } else {
+        this.editMode = false;
+      }
+    },
   },
 };
 </script>
