@@ -3,19 +3,44 @@
     <span v-if="formattedItems && formattedItems.length">
       <b-table hover :fields="fields" :items="formattedItems">
         <template #cell(action)="data">
+          <!-- <pre>
+            {{data}}
+          </pre> -->
           <button @click="handleDelete(data)">x</button>
+          <b-button
+            @click="
+              () => {
+                show = true;
+                editItem = data.item;
+              }
+            "
+            >Edit</b-button
+          >
         </template>
       </b-table>
     </span>
     <span v-else>No data available</span>
+    <div>
+      <b-modal hide-footer v-model="show" title="BootstrapVue">
+        <IncomeForm @close="()=> {
+          show = false;
+          getData();
+          }" :editItem="editItem" />
+      </b-modal>
+    </div>
   </div>
 </template>
 
 <script>
+import IncomeForm from "@/components/IncomeForm";
 export default {
+  components: {
+    IncomeForm,
+  },
   data() {
     return {
       items: [],
+      editItem: {},
       fields: [
         { key: "id", label: "Id" },
         { key: "date", label: "date" },
@@ -24,6 +49,7 @@ export default {
         { key: "description", label: "description" },
         "action",
       ],
+      show: false,
     };
   },
   computed: {
@@ -33,6 +59,7 @@ export default {
           id: item.id,
           date: item.date,
           type: item.type ? item.type.title : "",
+          typeId: item.type ? item.type.id : null,
           amount: item.amount,
           description: item.description,
         };

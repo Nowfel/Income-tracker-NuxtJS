@@ -1,18 +1,26 @@
 <template>
-  <form @submit.prevent="submit">
-    <input
-      type="text"
-      placeholder="Income Description..."
-      v-model="description"
-    />
-    <div>
-      <b-form-select v-model="typeId" :options="options"></b-form-select>
-      {{ selected }}
-    </div>
-    <input type="number" placeholder="Income Value..." v-model="amount" />
-    <input type="date" placeholder="Income Date..." v-model="date" />
-    <input type="submit" value="Submit" />
-  </form>
+  <div style="max-width: 600px" class="m-auto">
+    <form @submit.prevent="editMode ? update() : submit()">
+      <div>
+        <input
+          type="text"
+          placeholder="Income Description..."
+          v-model="description"
+        />
+      </div>
+      <div>
+        <b-form-select v-model="typeId" :options="options"></b-form-select>
+        {{ selected }}
+      </div>
+      <div>
+        <input type="number" placeholder="Income Value..." v-model="amount" />
+      </div>
+      <div></div>
+      <div></div>
+      <input type="date" placeholder="Income Date..." v-model="date" />
+      <input type="submit" :value="editMode ? 'UPDATE' : 'SUBMIT'" />
+    </form>
+  </div>
 </template>
 
 <script>
@@ -27,28 +35,69 @@ export default {
       loader: false,
       selected: null,
       options: [{ value: null, text: "Please select an option" }],
+      editMode: false,
     };
   },
-  mounted() {
-    this.getAllType();
+  props: {
+    editItem: {
+      type: Object,
+      default: () => {},
+    },
   },
-  methods: {
-    submit() {
-      let object = {
+  computed: {
+    incomeData() {
+      return {
         description: this.description,
         date: this.date,
         amount: this.amount,
         typeId: this.typeId,
         isOfficeIncomeId: this.isOfficeIncome,
-      };
+      } 
+    }
+  },
+  watch: {
+      editItem: {
+        immediate: true,
+        deep: true,
+        handler() {
+          console.log(this.editItem, 13213);
+          if (this.editItem && Object.keys(this.editItem).length) {
+            this.editMode = true;
+            this.amount = this.editItem.amount;
+            this.description = this.editItem.description;
+            this.date = this.editItem.date.substr(0, 10);
+            this.typeId = this.editItem.typeId;
+            this.isOfficeIncome = this.editItem.isOfficeIncome;
+            // this.formData.desc = this.editItem.desc;
+          } else {
+            this.editMode = false;
+          }
+        },
+      },
+    },
+  mounted() {
+    this.getAllType();
+  },
+  methods: {
+    submit() {
+      // let object = {
+      //   description: this.description,
+      //   date: this.date,
+      //   amount: this.amount,
+      //   typeId: this.typeId,
+      //   isOfficeIncomeId: this.isOfficeIncome,
+      // };
       this.loader = true;
       this.$axios
-        .post("income", object)
+        .post("income", this.incomeData)
         .then((result) => {
           this.$router.push("/income/list");
         })
         .catch((err) => {})
-        .finally(() => (this.loader = false));
+        .finally(() => {
+          this.loader = false;
+          this.$emit("close");
+        });
     },
     getAllType() {
       this.$axios
@@ -64,6 +113,27 @@ export default {
         })
         .catch((err) => {});
     },
+    update(){
+      //  let object = {
+      //   description: this.description,
+      //   date: this.date,
+      //   amount: this.amount,
+      //   typeId: this.typeId,
+      //   isOfficeIncome: this.isOfficeIncome,
+      // };
+      this.loader = true;
+      this.$axios
+        .put("income/" + this.editItem.id, this.incomeData)
+        .then((result) => {
+          
+        })
+        .catch((err) => {})
+        .finally(() => {
+          this.loader = false;
+          this.$emit("close");
+        });
+    }
+    
   },
 };
 </script>
@@ -71,6 +141,7 @@ export default {
 <style scoped>
 form {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-top: 30px;
 }
