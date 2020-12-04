@@ -80,13 +80,6 @@ export default {
   },
   methods: {
     submit() {
-      // let object = {
-      //   description: this.description,
-      //   date: this.date,
-      //   amount: this.amount,
-      //   typeId: this.typeId,
-      //   isOfficeIncomeId: this.isOfficeIncome,
-      // };
       this.loader = true;
       this.$axios
         .post("income", this.incomeData)
@@ -114,13 +107,6 @@ export default {
         .catch((err) => {});
     },
     update(){
-      //  let object = {
-      //   description: this.description,
-      //   date: this.date,
-      //   amount: this.amount,
-      //   typeId: this.typeId,
-      //   isOfficeIncome: this.isOfficeIncome,
-      // };
       this.loader = true;
       this.$axios
         .put("income/" + this.editItem.id, this.incomeData)
