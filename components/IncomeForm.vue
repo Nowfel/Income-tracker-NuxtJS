@@ -6,7 +6,7 @@
       v-model="description"
     />
     <div>
-      <b-form-select v-model="selected" :options="options"></b-form-select>
+      <b-form-select v-model="typeId" :options="options"></b-form-select>
       {{ selected }}
     </div>
     <input type="number" placeholder="Income Value..." v-model="amount" />
@@ -23,7 +23,7 @@ export default {
       date: "",
       description: "",
       isOfficeIncome: true,
-      typeId: null,
+      typeId: 100,
       loader: false,
       selected: null,
       options: [{ value: null, text: "Please select an option" }],
