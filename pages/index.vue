@@ -5,13 +5,9 @@
 </template>
 
 <script>
-import Caro from "../components/Caro";
-import Table from "../components/Table";
-import Login from "../components/Login";
+import Login from "@/components/Login";
 export default {
   components: {
-    Caro,
-    Table,
     Login,
   },
 };

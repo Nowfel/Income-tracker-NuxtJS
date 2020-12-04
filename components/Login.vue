@@ -64,7 +64,7 @@ export default {
         .post("login", object)
         .then((result) => {
           localStorage.setItem("token", result.data.token);
-          this.$router.push("/income");
+          this.$router.push("/income/list");
         })
         .catch((err) => {})
         .finally(() => (this.busy = false));
