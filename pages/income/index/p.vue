@@ -10,7 +10,7 @@
       </div>
       <div>
         <b-form-select v-model="typeId" :options="options"></b-form-select>
-        {{ selected }}
+      
       </div>
       <div>
         <input type="number" placeholder="Income Value..." v-model="amount" />
@@ -49,7 +49,13 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.stateData);
+        this.$axios.post("income", this.stateData).then((result) => {
+             this.$router.push("/income/list");
+             console.log(this.stateData);
+        }).catch((err) => {
+            
+        });
+      
     },
     p() {
       this.$axios
@@ -60,7 +66,7 @@ export default {
               value: item.id,
               text: item.title,
             };
-            console.log(items);
+            console.log(result.data.data,items);
           });
           this.options = [...this.options, ...items];
         })
