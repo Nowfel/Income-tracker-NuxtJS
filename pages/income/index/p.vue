@@ -1,6 +1,6 @@
 <template>
   <div style="max-width: 600px" class="m-auto">
-    <form @submit.prevent="editMode ? update() : submit()">
+    <form @submit.prevent="submit">
       <div>
         <input
           type="text"
@@ -15,8 +15,6 @@
       <div>
         <input type="number" placeholder="Income Value..." v-model="amount" />
       </div>
-      <div></div>
-      <div></div>
       <input type="date" placeholder="Income Date..." v-model="date" />
       <input type="submit" :value="editMode ? 'UPDATE' : 'SUBMIT'" />
     </form>
@@ -27,62 +25,33 @@
 export default {
   data() {
     return {
+      description: "",
+      typeId: "",
       amount: "",
       date: "",
-      description: "",
-      isOfficeIncome: true,
-      typeId: "",
-      loader: false,
+      editMode: false,
       selected: null,
       options: [{ value: null, text: "Please select an option" }],
-      editMode: false,
     };
   },
-  props: {
-    editItem: {
-      type: Object,
-      default: () => {},
-    },
-  },
   computed: {
-    incomeData() {
+    stateData() {
       return {
         description: this.description,
-        date: this.date,
-        amount: this.amount,
         typeId: this.typeId,
-        isOfficeIncomeId: this.isOfficeIncome,
+        amount: this.amount,
+        date: this.date,
       };
     },
   },
-  watch: {
-    editItem: {
-      immediate: true,
-      deep: true,
-      handler() {
-        console.log(this.editItem, 13213);
-        this.handleUpdateData(this.editItem);
-      },
-    },
-  },
-  mounted() {
-    this.getAllType();
+  created() {
+    this.p();
   },
   methods: {
     submit() {
-      this.loader = true;
-      this.$axios
-        .post("income", this.incomeData)
-        .then((result) => {
-          this.$router.push("/income/list");
-        })
-        .catch((err) => {})
-        .finally(() => {
-          this.loader = false;
-          this.$emit("close");
-        });
+      console.log(this.stateData);
     },
-    getAllType() {
+    p() {
       this.$axios
         .get("income-type")
         .then((result) => {
@@ -91,34 +60,11 @@ export default {
               value: item.id,
               text: item.title,
             };
+            console.log(items);
           });
           this.options = [...this.options, ...items];
         })
         .catch((err) => {});
-    },
-    update() {
-      this.loader = true;
-      this.$axios
-        .put("income/" + this.editItem.id, this.incomeData)
-        .then((result) => {})
-        .catch((err) => {})
-        .finally(() => {
-          this.loader = false;
-          this.$emit("close");
-        });
-    },
-    handleUpdateData({ amount, isOfficeIncome, typeId, date, description }) {
-      if (this.editItem && Object.keys(this.editItem).length) {
-        this.editMode = true;
-        this.amount = amount;
-        this.description = description || "";
-        this.date = date ? date.substr(0, 10) : "";
-        this.typeId = typeId || null;
-        this.isOfficeIncome = isOfficeIncome;
-        // this.formData.desc = desc;
-      } else {
-        this.editMode = false;
-      }
     },
   },
 };

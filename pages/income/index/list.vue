@@ -71,6 +71,7 @@ export default {
   },
   created() {
     this.getData();
+    this.d()
   },
   methods: {
     getData() {
@@ -85,6 +86,19 @@ export default {
       this.items = this.items.filter((item) => item.id !== data.item.id);
       this.$axios.delete("income/" + data.item.id);
     },
+    d(){
+      this.$axios.get("income-type").then((result) => {
+        let data = result.data.data.map( (item) => {
+          return{
+            value: item.id,
+            text: item.title
+          }
+        })
+          console.log( result.data.data,data);
+      }).catch((err) => {
+        
+      });
+    }
   },
 };
 </script>
