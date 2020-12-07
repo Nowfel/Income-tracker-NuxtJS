@@ -9,7 +9,10 @@
         />
       </div>
       <div>
-        <b-form-select v-model="typeId" :options="options"></b-form-select>
+        <b-form-select
+          v-model="typeId"
+          :options="formattedType"
+        ></b-form-select>
         {{ selected }}
       </div>
       <div>
@@ -24,6 +27,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -45,14 +49,27 @@ export default {
     },
   },
   computed: {
+    ...mapGetters({
+      allType: "income/allType",
+    }),
     incomeData() {
-      return {
+      let obj = {
         description: this.description,
         date: this.date,
         amount: this.amount,
         typeId: this.typeId,
         isOfficeIncomeId: this.isOfficeIncome,
       };
+      return obj;
+    },
+    formattedType() {
+      let items = this.allType.map((item) => {
+        return {
+          value: item.id,
+          text: item.title,
+        };
+      });
+      return [...this.options, ...items];
     },
   },
   watch: {
@@ -60,12 +77,11 @@ export default {
       immediate: true,
       deep: true,
       handler() {
-        if (this.editItem && Object.keys(this.editItem).length){
+        if (this.editItem && Object.keys(this.editItem).length) {
           this.handleUpdateData(this.editItem);
-        }else{
+        } else {
           this.editMode = false;
         }
-        
       },
     },
   },
@@ -86,7 +102,7 @@ export default {
           this.$emit("close");
         });
     },
-    getAllType() {
+    getAllType1() {
       this.$axios
         .get("income-type")
         .then((result) => {
@@ -100,6 +116,9 @@ export default {
         })
         .catch((err) => {});
     },
+    getAllType() {
+      this.$store.dispatch("income/getType", "");
+    },
     update() {
       this.loader = true;
       this.$axios
@@ -112,13 +131,13 @@ export default {
         });
     },
     handleUpdateData({ amount, isOfficeIncome, typeId, date, description }) {
-        this.editMode = true;
-        this.amount = amount || "";
-        this.description = description || "";
-        this.date = date ? date.substr(0, 10) : "";
-        this.typeId = typeId || null;
-        this.isOfficeIncome = isOfficeIncome;
-        // this.formData.desc = desc;
+      this.editMode = true;
+      this.amount = amount || "";
+      this.description = description || "";
+      this.date = date ? date.substr(0, 10) : "";
+      this.typeId = typeId || null;
+      this.isOfficeIncome = isOfficeIncome;
+      // this.formData.desc = desc;
     },
   },
 };
