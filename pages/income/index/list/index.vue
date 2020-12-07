@@ -33,6 +33,7 @@
 
 <script>
 import IncomeForm from "@/components/IncomeForm";
+import { mapGetters } from 'vuex';
 export default {
   components: {
     IncomeForm,
@@ -53,8 +54,11 @@ export default {
     };
   },
   computed: {
+      ...mapGetters({
+          allData: 'income/allData'
+      }),
     formattedItems() {
-      return this.items.map((item) => {
+      return this.allData.map((item) => {
         return {
           id: item.id,
           date: item.date,
@@ -71,34 +75,15 @@ export default {
   },
   created() {
     this.getData();
-    this.d()
   },
   methods: {
     getData() {
-      this.$axios
-        .get("income" + this.query)
-        .then((result) => {
-          this.items = result.data.data;
-        })
-        .catch((err) => {});
+      this.$store.dispatch('income/getData', this.query)
     },
     handleDelete(data) {
       this.items = this.items.filter((item) => item.id !== data.item.id);
       this.$axios.delete("income/" + data.item.id);
     },
-    d(){
-      this.$axios.get("income-type").then((result) => {
-        let data = result.data.data.map( (item) => {
-          return{
-            value: item.id,
-            text: item.title
-          }
-        })
-          console.log( result.data.data,data);
-      }).catch((err) => {
-        
-      });
-    }
   },
 };
 </script>
