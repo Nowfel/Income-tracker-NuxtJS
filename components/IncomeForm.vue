@@ -27,9 +27,9 @@
 export default {
   data() {
     return {
-      amount: "",
       date: "",
       description: "",
+      amount: "",
       isOfficeIncome: true,
       typeId: "",
       loader: false,
@@ -60,8 +60,12 @@ export default {
       immediate: true,
       deep: true,
       handler() {
-        console.log(this.editItem, 13213);
-        this.handleUpdateData(this.editItem);
+        if (this.editItem && Object.keys(this.editItem).length){
+          this.handleUpdateData(this.editItem);
+        }else{
+          this.editMode = false;
+        }
+        
       },
     },
   },
@@ -108,17 +112,13 @@ export default {
         });
     },
     handleUpdateData({ amount, isOfficeIncome, typeId, date, description }) {
-      if (this.editItem && Object.keys(this.editItem).length) {
         this.editMode = true;
-        this.amount = amount;
+        this.amount = amount || "";
         this.description = description || "";
         this.date = date ? date.substr(0, 10) : "";
         this.typeId = typeId || null;
         this.isOfficeIncome = isOfficeIncome;
         // this.formData.desc = desc;
-      } else {
-        this.editMode = false;
-      }
     },
   },
 };
