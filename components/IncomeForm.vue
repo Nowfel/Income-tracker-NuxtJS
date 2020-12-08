@@ -102,12 +102,12 @@ export default {
     //       this.$emit("close");
     //     });
     // },
-     submit(){
+    submit() {
       this.loader = true;
-       this.$store.dispatch("income/saveData",this.incomeData)
-       this.$router.push("/income/list");
-       this.loader = false;
-          this.$emit("close");
+      this.$store.dispatch("income/saveData", this.incomeData);
+      this.$router.push("/income/list");
+      this.loader = false;
+      this.$emit("close");
     },
     // getAllType1() {
     //   this.$axios
@@ -126,12 +126,24 @@ export default {
     getAllType() {
       this.$store.dispatch("income/getType", "");
     },
+    // update() {
+    //   this.loader = true;
+    //   this.$axios
+    //     .put("income/" + this.editItem.id, this.incomeData)
+    //     .then((result) => {})
+    //     .catch((err) => {})
+    //     .finally(() => {
+    //       this.loader = false;
+    //       this.$emit("close");
+    //     });
+    // },
     update() {
       this.loader = true;
-      this.$axios
-        .put("income/" + this.editItem.id, this.incomeData)
-        .then((result) => {})
-        .catch((err) => {})
+      this.$store
+        .dispatch("income/editData", {
+          ...this.incomeData,
+          id: this.editItem.id,
+        })
         .finally(() => {
           this.loader = false;
           this.$emit("close");

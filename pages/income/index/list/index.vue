@@ -22,10 +22,15 @@
     <span v-else>No data available</span>
     <div>
       <b-modal hide-footer v-model="show" title="BootstrapVue">
-        <IncomeForm @close="()=> {
-          show = false;
-          getData();
-          }" :editItem="editItem" />
+        <IncomeForm
+          @close="
+            () => {
+              show = false;
+              getData();
+            }
+          "
+          :editItem="editItem"
+        />
       </b-modal>
     </div>
   </div>
@@ -33,7 +38,7 @@
 
 <script>
 import IncomeForm from "@/components/IncomeForm";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   components: {
     IncomeForm,
@@ -54,9 +59,9 @@ export default {
     };
   },
   computed: {
-      ...mapGetters({
-          allData: 'income/allData'
-      }),
+    ...mapGetters({
+      allData: "income/allData",
+    }),
     formattedItems() {
       return this.allData.map((item) => {
         return {
@@ -78,11 +83,17 @@ export default {
   },
   methods: {
     getData() {
-      this.$store.dispatch('income/getData', this.query)
+      if (this.allData && this.allData.length) {
+        return;
+      }
+      this.$store.dispatch("income/getData", this.query);
     },
+    // handleDelete(data) {
+    //   this.items = this.items.filter((item) => item.id !== data.item.id);
+    //   this.$axios.delete("income/" + data.item.id);
+    // },
     handleDelete(data) {
-      this.items = this.items.filter((item) => item.id !== data.item.id);
-      this.$axios.delete("income/" + data.item.id);
+      this.$store.dispatch("income/deleteData", data.item.id);
     },
   },
 };
