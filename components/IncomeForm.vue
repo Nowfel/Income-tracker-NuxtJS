@@ -89,33 +89,40 @@ export default {
     this.getAllType();
   },
   methods: {
-    submit() {
+    // submit1() {
+    //   this.loader = true;
+    //   this.$axios
+    //     .post("income", this.incomeData)
+    //     .then((result) => {
+    //       this.$router.push("/income/list");
+    //     })
+    //     .catch((err) => {})
+    //     .finally(() => {
+    //       this.loader = false;
+    //       this.$emit("close");
+    //     });
+    // },
+     submit(){
       this.loader = true;
-      this.$axios
-        .post("income", this.incomeData)
-        .then((result) => {
-          this.$router.push("/income/list");
-        })
-        .catch((err) => {})
-        .finally(() => {
-          this.loader = false;
+       this.$store.dispatch("income/saveData",this.incomeData)
+       this.$router.push("/income/list");
+       this.loader = false;
           this.$emit("close");
-        });
     },
-    getAllType1() {
-      this.$axios
-        .get("income-type")
-        .then((result) => {
-          let items = result.data.data.map((item) => {
-            return {
-              value: item.id,
-              text: item.title,
-            };
-          });
-          this.options = [...this.options, ...items];
-        })
-        .catch((err) => {});
-    },
+    // getAllType1() {
+    //   this.$axios
+    //     .get("income-type")
+    //     .then((result) => {
+    //       let items = result.data.data.map((item) => {
+    //         return {
+    //           value: item.id,
+    //           text: item.title,
+    //         };
+    //       });
+    //       this.options = [...this.options, ...items];
+    //     })
+    //     .catch((err) => {});
+    // },
     getAllType() {
       this.$store.dispatch("income/getType", "");
     },
